@@ -80,7 +80,7 @@
   </div>
 
   <div class="message-title" id="messageTitle">
-     الروح تقول لك !!
+    Your message for today
   </div>
 
   <div class="video-container" id="videoContainer"></div>
@@ -115,22 +115,29 @@
     }
 
     function showVideo(videoId) {
-      videoContainer.innerHTML = `
-        <blockquote
-          class="tiktok-embed"
-          cite="https://www.tiktok.com/video/${videoId}"
-          data-video-id="${videoId}"
-          style="max-width:325px;"
-        ></blockquote>
-      `;
+    videoContainer.innerHTML = `
+      <blockquote
+        class="tiktok-embed"
+        cite="https://www.tiktok.com/video/${videoId}"
+        data-video-id="${videoId}"
+        style="max-width:325px;"
+      ></blockquote>
+    `;
 
-      messageTitle.style.opacity = 1;
-      videoContainer.style.opacity = 1;
+    messageTitle.style.opacity = 1;
+    videoContainer.style.opacity = 1;
 
-      if (window.tiktokEmbed) {
+    // انتظر سكربت تيك توك حتى يصبح جاهزًا
+    const tryLoad = () => {
+      if (window.tiktokEmbed && window.tiktokEmbed.load) {
         window.tiktokEmbed.load();
+      } else {
+        setTimeout(tryLoad, 200);
       }
-    }
+    };
+
+    tryLoad();
+  }
 
     wheel.addEventListener("click", () => {
       if (spinning) return;
