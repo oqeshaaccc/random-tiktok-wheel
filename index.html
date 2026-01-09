@@ -79,16 +79,27 @@
       return match ? match[1] : null;
     }
 
-    wheel.onclick = () => {
-      rotation += 1080 + Math.random() * 360;
-      wheel.style.transform = `rotate(${rotation}deg)`;
+   wheel.onclick = () => {
+  rotation += 1080 + Math.random() * 360;
+  wheel.style.transform = `rotate(${rotation}deg)`;
 
-      if (remaining.length === 0) remaining = [...videoLinks];
-      selectedLink = remaining.splice(Math.floor(Math.random() * remaining.length), 1)[0];
+  // Hide UI immediately
+  message.style.opacity = 0;
+  openBtn.style.opacity = 0;
 
-      message.style.opacity = 1;
-      openBtn.style.opacity = 1;
-    };
+  if (remaining.length === 0) remaining = [...videoLinks];
+  selectedLink = remaining.splice(
+    Math.floor(Math.random() * remaining.length),
+    1
+  )[0];
+
+  // Reveal AFTER spin completes
+  setTimeout(() => {
+    message.style.opacity = 1;
+    openBtn.style.opacity = 1;
+  }, 1200); // matches CSS transition duration
+};
+
 
     openBtn.onclick = () => {
       if (!selectedLink) return;
