@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Random TikTok Wheel</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -42,18 +43,12 @@
     .video-container {
       margin-top: 30px;
       width: 325px;
-      height: 580px;
-      background: #000;
+      min-height: 580px;
       display: none;
-    }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
     }
   </style>
 </head>
+
 <body>
 
   <h1>Spin the Wheel</h1>
@@ -65,11 +60,11 @@
   <div class="video-container" id="videoContainer"></div>
 
   <script>
-    // Replace these with TikTok embed URLs from your playlist
-    const tiktokVideos = [
-      "https://www.tiktok.com/embed/v2/7592791446223211797",
-      "https://www.tiktok.com/embed/v2/7592791446223211797",
-      "https://www.tiktok.com/embed/v2/7592791446223211797"
+    // Use VIDEO IDS only (not embed URLs)
+    const tiktokVideoIds = [
+      "7592791446223211797",
+      "7592791446223211797",
+      "7592791446223211797"
     ];
 
     const wheel = document.getElementById("wheel");
@@ -81,11 +76,34 @@
       rotation += Math.floor(Math.random() * 360) + 720;
       wheel.style.transform = `rotate(${rotation}deg)`;
 
-      const randomIndex = Math.floor(Math.random() * tiktokVideos.length);
-      const videoUrl = tiktokVideos[randomIndex];
+      const randomIndex = Math.floor(Math.random() * tiktokVideoIds.length);
+      const videoId = tiktokVideoIds[randomIndex];
 
-      videoContainer.innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
+      // Inject official TikTok embed markup
+      videoContainer.innerHTML = `
+        <blockquote 
+          class="tiktok-embed"
+          cite="https://www.tiktok.com/video/${videoId}"
+          data-video-id="${videoId}"
+          style="max-width:325px; min-width:325px;"
+        ></blockquote>
+      `;
+
       videoContainer.style.display = "block";
+
+      // Load TikTok embed script once
+      if (!document.getElementById("tiktok-embed-script")) {
+        const script = document.createElement("script");
+        script.id = "tiktok-embed-script";
+        script.src = "https://www.tiktok.com/embed.js";
+        script.async = true;
+        document.body.appendChild(script);
+      } else {
+        // Reprocess embeds if script already exists
+        if (window.tiktokEmbedLoad) {
+          window.tiktokEmbedLoad();
+        }
+      }
     });
   </script>
 
