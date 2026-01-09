@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ْرَسائِل الرُّوح</title>
+  <title>Message Wheel</title>
 
   <style>
     body {
@@ -20,7 +20,7 @@
     }
 
     h2 {
-      margin-bottom: 5px;
+      margin-bottom: 6px;
     }
 
     .subtitle {
@@ -70,41 +70,48 @@
 
 <body>
 
-  <h2>عَجَلَة رسائل الرُّوح</h2>
-  <div class="subtitle">رسالة الروح لك لليوم</div>
+  <h2>Spin the Wheel</h2>
+  <div class="subtitle">رسالتك لليوم</div>
 
   <div class="wheel" id="wheel">
-    <span>اضغط هنااااا</span>
+    <span>SPIN</span>
   </div>
 
-  <div class="message" id="message">رسالتك جاهزة</div>
+  <div class="message" id="message">رسالتك لليوم جاهزة</div>
   <button class="open-btn" id="openBtn">شاهد الرسالة</button>
 
   <script>
-    const videoIds = [
-      "7592791446223211797",
-      "7516196802194885894" , 
-      "7591986789489904917"
+    /* STORE FULL TIKTOK LINKS */
+    const videoLinks = [
+      "https://www.tiktok.com/@the144.000/video/7592791446223211797",
+      "https://www.tiktok.com/@the144.000/video/7516196802194885894",
+      "https://www.tiktok.com/@the144.000/video/7593145154840595733",
+      "https://www.tiktok.com/@the144.000/video/7591986789489904917"
     ];
 
-    let remaining = [...videoIds];
+    let remaining = [...videoLinks];
+    let selectedLink = null;
     let rotation = 0;
-    let selectedVideoId = null;
 
     const wheel = document.getElementById("wheel");
     const message = document.getElementById("message");
     const openBtn = document.getElementById("openBtn");
+
+    function extractVideoId(url) {
+      const match = url.match(/video\/(\d+)/);
+      return match ? match[1] : null;
+    }
 
     wheel.addEventListener("click", () => {
       rotation += 1080 + Math.random() * 360;
       wheel.style.transform = `rotate(${rotation}deg)`;
 
       if (remaining.length === 0) {
-        remaining = [...videoIds];
+        remaining = [...videoLinks];
       }
 
       const index = Math.floor(Math.random() * remaining.length);
-      selectedVideoId = remaining.splice(index, 1)[0];
+      selectedLink = remaining.splice(index, 1)[0];
 
       message.style.opacity = 0;
       openBtn.style.opacity = 0;
@@ -115,41 +122,42 @@
       }, 1200);
     });
 
-  openBtn.addEventListener("click", () => {
-  if (!selectedVideoId) return;
+    openBtn.addEventListener("click", () => {
+      if (!selectedLink) return;
 
-  const appLink = `snssdk1233://aweme/detail/${selectedVideoId}`;
-  const webLink = `https://www.tiktok.com/video/${selectedVideoId}`;
+      const videoId = extractVideoId(selectedLink);
+      if (!videoId) return;
 
-  let fallbackTimer = null;
-  let appOpened = false;
+      const appLink = `snssdk1233://aweme/detail/${videoId}`;
+      const webLink = selectedLink;
 
-  const onVisibilityChange = () => {
-    if (document.hidden) {
-      appOpened = true;
-      if (fallbackTimer) clearTimeout(fallbackTimer);
-    }
-  };
+      let appOpened = false;
+      let timer;
 
-  document.addEventListener("visibilitychange", onVisibilityChange, { once: true });
+      const onVisibilityChange = () => {
+        if (document.hidden) {
+          appOpened = true;
+          clearTimeout(timer);
+        }
+      };
 
-  // Try to open TikTok app
-  window.location.href = appLink;
+      document.addEventListener("visibilitychange", onVisibilityChange, { once: true });
 
-  // Fallback ONLY if app did not open
-  fallbackTimer = setTimeout(() => {
-    if (!appOpened) {
-      window.location.href = webLink; // same tab, no popup
-    }
-  }, 900);
+      // Attempt to open TikTok app
+      window.location.href = appLink;
 
-  // Hide UI and force new spin
-  message.style.opacity = 0;
-  openBtn.style.opacity = 0;
-  selectedVideoId = null;
-});
+      // Web fallback (same tab, no popup)
+      timer = setTimeout(() => {
+        if (!appOpened) {
+          window.location.href = webLink;
+        }
+      }, 900);
 
-
+      // Hide UI and require another spin
+      message.style.opacity = 0;
+      openBtn.style.opacity = 0;
+      selectedLink = null;
+    });
   </script>
 
 </body>
