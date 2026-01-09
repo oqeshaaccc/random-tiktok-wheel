@@ -20,7 +20,7 @@
     }
 
     h1 {
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       font-weight: normal;
       letter-spacing: 1px;
     }
@@ -56,31 +56,21 @@
       font-size: 16px;
       letter-spacing: 1px;
       opacity: 0;
-      transition: opacity 1s ease;
+      transition: opacity 0.8s ease;
     }
 
     .video-container {
       margin-top: 15px;
-      width: 100%;
-      max-width: 325px;
-      aspect-ratio: 9 / 16;
+      width: 325px;
+      min-height: 580px;
       opacity: 0;
-      transform: scale(0.95);
-      transition: opacity 1.2s ease, transform 1.2s ease;
+      transition: opacity 1s ease;
       display: none;
       filter: drop-shadow(0 0 25px rgba(255,255,255,0.15));
     }
 
     .video-container.visible {
       opacity: 1;
-      transform: scale(1);
-    }
-
-    @media (max-width: 400px) {
-      .wheel {
-        width: 170px;
-        height: 170px;
-      }
     }
   </style>
 </head>
@@ -101,7 +91,6 @@
   <div class="video-container" id="videoContainer"></div>
 
   <script>
-    // SOURCE VIDEO IDS (easy to expand or move to JSON later)
     const originalVideoIds = [
       "7592791446223211797",
       "7592791446223211797",
@@ -117,6 +106,19 @@
     let rotation = 0;
     let spinning = false;
 
+    function loadTikTokEmbed() {
+      // Remove old script if it exists
+      const oldScript = document.getElementById("tiktok-embed-script");
+      if (oldScript) oldScript.remove();
+
+      // Add fresh script
+      const script = document.createElement("script");
+      script.id = "tiktok-embed-script";
+      script.src = "https://www.tiktok.com/embed.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+
     wheel.addEventListener("click", () => {
       if (spinning) return;
       spinning = true;
@@ -124,12 +126,11 @@
       rotation += Math.floor(Math.random() * 360) + 1080;
       wheel.style.transform = `rotate(${rotation}deg)`;
 
-      // Reset reveal
+      // Reset UI
       videoContainer.classList.remove("visible");
       videoContainer.style.display = "none";
       messageTitle.style.opacity = 0;
 
-      // Refill pool if empty
       if (remainingVideoIds.length === 0) {
         remainingVideoIds = [...originalVideoIds];
       }
@@ -137,36 +138,22 @@
       const index = Math.floor(Math.random() * remainingVideoIds.length);
       const videoId = remainingVideoIds.splice(index, 1)[0];
 
-      // Delay reveal until wheel finishes spinning
       setTimeout(() => {
         videoContainer.innerHTML = `
           <blockquote
             class="tiktok-embed"
             cite="https://www.tiktok.com/video/${videoId}"
             data-video-id="${videoId}"
-            style="width:100%; height:100%;"
+            style="max-width:325px;"
           ></blockquote>
         `;
 
         videoContainer.style.display = "block";
+        messageTitle.style.opacity = 1;
+        videoContainer.classList.add("visible");
 
-        // Fade-in sequence
-        setTimeout(() => {
-          messageTitle.style.opacity = 1;
-          videoContainer.classList.add("visible");
-          spinning = false;
-        }, 300);
-
-        // Load TikTok script once
-        if (!document.getElementById("tiktok-embed-script")) {
-          const script = document.createElement("script");
-          script.id = "tiktok-embed-script";
-          script.src = "https://www.tiktok.com/embed.js";
-          script.async = true;
-          document.body.appendChild(script);
-        } else if (window.tiktokEmbedLoad) {
-          window.tiktokEmbedLoad();
-        }
+        loadTikTokEmbed();
+        spinning = false;
 
       }, 1200);
     });
