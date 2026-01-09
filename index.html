@@ -121,30 +121,31 @@
   const appLink = `snssdk1233://aweme/detail/${selectedVideoId}`;
   const webLink = `https://www.tiktok.com/video/${selectedVideoId}`;
 
+  let fallbackTimer = null;
   let appOpened = false;
 
-  const handleVisibility = () => {
+  const onVisibilityChange = () => {
     if (document.hidden) {
       appOpened = true;
+      if (fallbackTimer) clearTimeout(fallbackTimer);
     }
   };
 
-  document.addEventListener("visibilitychange", handleVisibility, { once: true });
+  document.addEventListener("visibilitychange", onVisibilityChange, { once: true });
 
-  // فتح التطبيق
+  // Try to open TikTok app
   window.location.href = appLink;
 
-  // fallback للويب فقط إذا لم يُفتح التطبيق
-  setTimeout(() => {
+  // Fallback ONLY if app did not open
+  fallbackTimer = setTimeout(() => {
     if (!appOpened) {
-      window.open(webLink, "_blank");
+      window.location.href = webLink; // same tab, no popup
     }
   }, 900);
 
-  // إخفاء الرسالة والزر بعد الضغط
+  // Hide UI and force new spin
   message.style.opacity = 0;
   openBtn.style.opacity = 0;
-
   selectedVideoId = null;
 });
 
