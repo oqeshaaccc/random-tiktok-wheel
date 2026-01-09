@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random TikTok Wheel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .wheel {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: conic-gradient(#ff0050, #00f2ea, #ff0050);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      transition: transform 1s ease-out;
+    }
+
+    .wheel span {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .video-container {
+      margin-top: 30px;
+      width: 325px;
+      height: 580px;
+      background: #000;
+      display: none;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Spin the Wheel</h1>
+
+  <div class="wheel" id="wheel">
+    <span>CLICK</span>
+  </div>
+
+  <div class="video-container" id="videoContainer"></div>
+
+  <script>
+    // Replace these with TikTok embed URLs from your playlist
+    const tiktokVideos = [
+      "https://www.tiktok.com/embed/v2/VIDEO_ID_1",
+      "https://www.tiktok.com/embed/v2/VIDEO_ID_2",
+      "https://www.tiktok.com/embed/v2/VIDEO_ID_3"
+    ];
+
+    const wheel = document.getElementById("wheel");
+    const videoContainer = document.getElementById("videoContainer");
+
+    let rotation = 0;
+
+    wheel.addEventListener("click", () => {
+      rotation += Math.floor(Math.random() * 360) + 720;
+      wheel.style.transform = `rotate(${rotation}deg)`;
+
+      const randomIndex = Math.floor(Math.random() * tiktokVideos.length);
+      const videoUrl = tiktokVideos[randomIndex];
+
+      videoContainer.innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
+      videoContainer.style.display = "block";
+    });
+  </script>
+
+</body>
+</html>
