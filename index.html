@@ -65,12 +65,7 @@
       min-height: 580px;
       opacity: 0;
       transition: opacity 1s ease;
-      display: none;
       filter: drop-shadow(0 0 25px rgba(255,255,255,0.15));
-    }
-
-    .video-container.visible {
-      opacity: 1;
     }
   </style>
 </head>
@@ -90,11 +85,15 @@
 
   <div class="video-container" id="videoContainer"></div>
 
+  <!-- TikTok Embed Script (LOAD ONCE) -->
+  <script async src="https://www.tiktok.com/embed.js"></script>
+
   <script>
     const originalVideoIds = [
       "7592791446223211797",
       "7592791446223211797",
       "7592791446223211797"
+      // add more IDs here
     ];
 
     let remainingVideoIds = [...originalVideoIds];
@@ -106,17 +105,31 @@
     let rotation = 0;
     let spinning = false;
 
-    function loadTikTokEmbed() {
-      // Remove old script if it exists
-      const oldScript = document.getElementById("tiktok-embed-script");
-      if (oldScript) oldScript.remove();
+    function getRandomVideoId() {
+      if (remainingVideoIds.length === 0) {
+        remainingVideoIds = [...originalVideoIds];
+      }
 
-      // Add fresh script
-      const script = document.createElement("script");
-      script.id = "tiktok-embed-script";
-      script.src = "https://www.tiktok.com/embed.js";
-      script.async = true;
-      document.body.appendChild(script);
+      const index = Math.floor(Math.random() * remainingVideoIds.length);
+      return remainingVideoIds.splice(index, 1)[0];
+    }
+
+    function showVideo(videoId) {
+      videoContainer.innerHTML = `
+        <blockquote
+          class="tiktok-embed"
+          cite="https://www.tiktok.com/video/${videoId}"
+          data-video-id="${videoId}"
+          style="max-width:325px;"
+        ></blockquote>
+      `;
+
+      messageTitle.style.opacity = 1;
+      videoContainer.style.opacity = 1;
+
+      if (window.tiktokEmbed) {
+        window.tiktokEmbed.load();
+      }
     }
 
     wheel.addEventListener("click", () => {
@@ -126,35 +139,15 @@
       rotation += Math.floor(Math.random() * 360) + 1080;
       wheel.style.transform = `rotate(${rotation}deg)`;
 
-      // Reset UI
-      videoContainer.classList.remove("visible");
-      videoContainer.style.display = "none";
       messageTitle.style.opacity = 0;
+      videoContainer.style.opacity = 0;
+      videoContainer.innerHTML = "";
 
-      if (remainingVideoIds.length === 0) {
-        remainingVideoIds = [...originalVideoIds];
-      }
-
-      const index = Math.floor(Math.random() * remainingVideoIds.length);
-      const videoId = remainingVideoIds.splice(index, 1)[0];
+      const videoId = getRandomVideoId();
 
       setTimeout(() => {
-        videoContainer.innerHTML = `
-          <blockquote
-            class="tiktok-embed"
-            cite="https://www.tiktok.com/video/${videoId}"
-            data-video-id="${videoId}"
-            style="max-width:325px;"
-          ></blockquote>
-        `;
-
-        videoContainer.style.display = "block";
-        messageTitle.style.opacity = 1;
-        videoContainer.classList.add("visible");
-
-        loadTikTokEmbed();
+        showVideo(videoId);
         spinning = false;
-
       }, 1200);
     });
   </script>
