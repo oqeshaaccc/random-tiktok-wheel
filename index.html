@@ -116,19 +116,32 @@
     });
 
     openBtn.addEventListener("click", () => {
-      if (!selectedVideoId) return;
+  if (!selectedVideoId) return;
 
-      const appLink = `snssdk1233://aweme/detail/${selectedVideoId}`;
-      const webLink = `https://www.tiktok.com/video/${selectedVideoId}`;
+  const appLink = `snssdk1233://aweme/detail/${selectedVideoId}`;
+  const webLink = `https://www.tiktok.com/video/${selectedVideoId}`;
 
-      // Attempt to open TikTok app
-      window.location.href = appLink;
+  let appOpened = false;
 
-      // Fallback to web if app link fails
-      setTimeout(() => {
-        window.location.href = webLink;
-      }, 800);
-    });
+  const handleVisibility = () => {
+    if (document.hidden) {
+      appOpened = true;
+    }
+  };
+
+  document.addEventListener("visibilitychange", handleVisibility, { once: true });
+
+  // حاول فتح التطبيق
+  window.location.href = appLink;
+
+  // fallback فقط إذا لم يُفتح التطبيق
+  setTimeout(() => {
+    if (!appOpened) {
+      window.open(webLink, "_blank");
+    }
+  }, 900);
+});
+
   </script>
 
 </body>
