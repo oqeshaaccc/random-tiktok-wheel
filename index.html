@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>رسائل الروح</title>
+  <title>Random TikTok Wheel</title>
 
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, #111 0%, #000 60%);
+      background: #0f0f0f;
       color: #ffffff;
       display: flex;
       flex-direction: column;
@@ -16,19 +16,10 @@
       justify-content: center;
       min-height: 100vh;
       margin: 0;
-      padding: 20px;
     }
 
     h1 {
-      margin-bottom: 8px;
-      font-weight: normal;
-      letter-spacing: 1px;
-    }
-
-    .subtitle {
-      opacity: 0.7;
-      margin-bottom: 25px;
-      font-size: 14px;
+      margin-bottom: 20px;
     }
 
     .wheel {
@@ -40,8 +31,8 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 0 30px rgba(255, 255, 255, 0.25);
-      transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      transition: transform 1s ease-out;
     }
 
     .wheel span {
@@ -49,19 +40,11 @@
       font-weight: bold;
     }
 
-    .message-title {
-      margin-top: 30px;
-      font-size: 16px;
-      opacity: 0;
-      transition: opacity 0.8s ease;
-    }
-
     .video-container {
-      margin-top: 15px;
+      margin-top: 30px;
       width: 325px;
       min-height: 580px;
-      opacity: 0;
-      transition: opacity 1s ease;
+      display: none;
     }
   </style>
 </head>
@@ -69,72 +52,58 @@
 <body>
 
   <h1>Spin the Wheel</h1>
-  <div class="subtitle">رسالتك لليوم</div>
 
   <div class="wheel" id="wheel">
-    <span>اضغط هنا</span>
-  </div>
-
-  <div class="message-title" id="messageTitle">
-    الروح تقول لك !! 
+    <span>CLICK</span>
   </div>
 
   <div class="video-container" id="videoContainer"></div>
 
   <script>
-    const videoIds = [
+    // Use VIDEO IDS only (not embed URLs)
+    const tiktokVideoIds = [
+      "7592791446223211797",
+      "7592791446223211797",
       "7592791446223211797"
     ];
 
     const wheel = document.getElementById("wheel");
     const videoContainer = document.getElementById("videoContainer");
-    const messageTitle = document.getElementById("messageTitle");
 
     let rotation = 0;
-    let spinning = false;
 
-    function loadTikTokEmbed(videoId) {
-      // امسح المحتوى
+    wheel.addEventListener("click", () => {
+      rotation += Math.floor(Math.random() * 360) + 720;
+      wheel.style.transform = `rotate(${rotation}deg)`;
+
+      const randomIndex = Math.floor(Math.random() * tiktokVideoIds.length);
+      const videoId = tiktokVideoIds[randomIndex];
+
+      // Inject official TikTok embed markup
       videoContainer.innerHTML = `
-        <blockquote
+        <blockquote 
           class="tiktok-embed"
           cite="https://www.tiktok.com/video/${videoId}"
           data-video-id="${videoId}"
-          style="max-width:325px;"
+          style="max-width:325px; min-width:325px;"
         ></blockquote>
       `;
 
-      // احذف أي سكربت قديم
-      const oldScript = document.getElementById("tiktok-embed-script");
-      if (oldScript) oldScript.remove();
+      videoContainer.style.display = "block";
 
-      // أضف السكربت من جديد
-      const script = document.createElement("script");
-      script.id = "tiktok-embed-script";
-      script.src = "https://www.tiktok.com/embed.js";
-      script.async = true;
-      document.body.appendChild(script);
-    }
-
-    wheel.addEventListener("click", () => {
-      if (spinning) return;
-      spinning = true;
-
-      rotation += Math.floor(Math.random() * 360) + 1080;
-      wheel.style.transform = `rotate(${rotation}deg)`;
-
-      messageTitle.style.opacity = 0;
-      videoContainer.style.opacity = 0;
-      videoContainer.innerHTML = "";
-
-      const videoId = videoIds[Math.floor(Math.random() * videoIds.length)];
-
-      setTimeout(() => {
-        loadTikTokEmbed(videoId);
-        messageTitle.style.opacity = 1;
-        videoContainer.style.opacity = 1;
-        spinning = false;
-      }, 1200);
+      // Load TikTok embed script once
+      if (!document.getElementById("tiktok-embed-script")) {
+        const script = document.createElement("script");
+        script.id = "tiktok-embed-script";
+        script.src = "https://www.tiktok.com/embed.js";
+        script.async = true;
+        document.body.appendChild(script);
+      } else {
+        // Reprocess embeds if script already exists
+        if (window.tiktokEmbedLoad) {
+          window.tiktokEmbedLoad();
+        }
+      }
     });
   </script>
 
