@@ -115,7 +115,7 @@
       }, 1200);
     });
 
-    openBtn.addEventListener("click", () => {
+  openBtn.addEventListener("click", () => {
   if (!selectedVideoId) return;
 
   const appLink = `snssdk1233://aweme/detail/${selectedVideoId}`;
@@ -131,16 +131,23 @@
 
   document.addEventListener("visibilitychange", handleVisibility, { once: true });
 
-  // حاول فتح التطبيق
+  // فتح التطبيق
   window.location.href = appLink;
 
-  // fallback فقط إذا لم يُفتح التطبيق
+  // fallback للويب فقط إذا لم يُفتح التطبيق
   setTimeout(() => {
     if (!appOpened) {
       window.open(webLink, "_blank");
     }
   }, 900);
+
+  // إخفاء الرسالة والزر بعد الضغط
+  message.style.opacity = 0;
+  openBtn.style.opacity = 0;
+
+  selectedVideoId = null;
 });
+
 
   </script>
 
