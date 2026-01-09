@@ -1,129 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Message Wheel</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Message Wheel</title>
 
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: radial-gradient(circle at top, #111, #000);
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  margin: 0;
-}
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #111, #000);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
 
-h2 {
-  margin-bottom: 10px;
-}
+    h2 {
+      margin-bottom: 5px;
+    }
 
-.subtitle {
-  opacity: 0.7;
-  margin-bottom: 20px;
-}
+    .subtitle {
+      opacity: 0.7;
+      margin-bottom: 20px;
+    }
 
-.wheel {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: conic-gradient(#ff0050, #00f2ea, #ff0050);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 1.2s ease-out;
-}
+    .wheel {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: conic-gradient(#ff0050, #00f2ea, #ff0050);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 1.2s ease-out;
+      user-select: none;
+    }
 
-.wheel span {
-  font-weight: bold;
-}
+    .wheel span {
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
 
-.message {
-  margin-top: 25px;
-  font-size: 16px;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
+    .message {
+      margin-top: 25px;
+      font-size: 16px;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
 
-.open-btn {
-  margin-top: 15px;
-  padding: 12px 20px;
-  background: #ff0050;
-  color: #fff;
-  border: none;
-  border-radius: 25px;
-  font-size: 15px;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-</style>
+    .open-btn {
+      margin-top: 15px;
+      padding: 12px 22px;
+      background: #ff0050;
+      color: #fff;
+      border: none;
+      border-radius: 25px;
+      font-size: 15px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+  </style>
 </head>
 
 <body>
 
-<h2>Spin the Wheel</h2>
-<div class="subtitle">رسالتك لليوم</div>
+  <h2>Spin the Wheel</h2>
+  <div class="subtitle">رسالتك لليوم</div>
 
-<div class="wheel" id="wheel">
-  <span>SPIN</span>
-</div>
+  <div class="wheel" id="wheel">
+    <span>SPIN</span>
+  </div>
 
-<div class="message" id="message">رسالتك لليوم جاهزة</div>
-<button class="open-btn" id="openBtn">شاهد الرسالة</button>
+  <div class="message" id="message">رسالتك لليوم جاهزة</div>
+  <button class="open-btn" id="openBtn">شاهد الرسالة</button>
 
-<script>
-const videos = [
-  "7592791446223211797",
-  "7592791446223211797",
-  "7592791446223211797"
-];
+  <script>
+    const videoIds = [
+      "7592791446223211797",
+      "7592791446223211797",
+      "7592791446223211797"
+    ];
 
-let remaining = [...videos];
-let rotation = 0;
-let selectedVideo = null;
+    let remaining = [...videoIds];
+    let rotation = 0;
+    let selectedVideoId = null;
 
-const wheel = document.getElementById("wheel");
-const message = document.getElementById("message");
-const openBtn = document.getElementById("openBtn");
+    const wheel = document.getElementById("wheel");
+    const message = document.getElementById("message");
+    const openBtn = document.getElementById("openBtn");
 
-wheel.onclick = () => {
-  rotation += 1080 + Math.random() * 360;
-  wheel.style.transform = `rotate(${rotation}deg)`;
+    wheel.addEventListener("click", () => {
+      rotation += 1080 + Math.random() * 360;
+      wheel.style.transform = `rotate(${rotation}deg)`;
 
-  if (remaining.length === 0) remaining = [...videos];
-  const index = Math.floor(Math.random() * remaining.length);
-  selectedVideo = remaining.splice(index, 1)[0];
+      if (remaining.length === 0) {
+        remaining = [...videoIds];
+      }
 
-  message.style.opacity = 0;
-  openBtn.style.opacity = 0;
+      const index = Math.floor(Math.random() * remaining.length);
+      selectedVideoId = remaining.splice(index, 1)[0];
 
-  setTimeout(() => {
-    message.style.opacity = 1;
-    openBtn.style.opacity = 1;
-  }, 1200);
-};
+      message.style.opacity = 0;
+      openBtn.style.opacity = 0;
 
-openBtn.onclick = () => {
-  if (!selectedVideo) return;
+      setTimeout(() => {
+        message.style.opacity = 1;
+        openBtn.style.opacity = 1;
+      }, 1200);
+    });
 
-  const appLink = `tiktok://www.tiktok.com/video/${selectedVideo}`;
-  const webLink = `https://www.tiktok.com/video/${selectedVideo}`;
+    openBtn.addEventListener("click", () => {
+      if (!selectedVideoId) return;
 
-  // Try to open app
-  window.location.href = appLink;
+      const appLink = `snssdk1233://aweme/detail/${selectedVideoId}`;
+      const webLink = `https://www.tiktok.com/video/${selectedVideoId}`;
 
-  // Fallback to web after delay
-  setTimeout(() => {
-    window.location.href = webLink;
-  }, 800);
-};
-</script>
+      // Attempt to open TikTok app
+      window.location.href = appLink;
+
+      // Fallback to web if app link fails
+      setTimeout(() => {
+        window.location.href = webLink;
+      }, 800);
+    });
+  </script>
 
 </body>
 </html>
