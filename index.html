@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Message Wheel</title>
+  <title>رسائل الروح</title>
 
   <style>
     body {
@@ -42,19 +42,16 @@
       cursor: pointer;
       box-shadow: 0 0 30px rgba(255, 255, 255, 0.25);
       transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-      user-select: none;
     }
 
     .wheel span {
       font-size: 18px;
       font-weight: bold;
-      letter-spacing: 1px;
     }
 
     .message-title {
       margin-top: 30px;
       font-size: 16px;
-      letter-spacing: 1px;
       opacity: 0;
       transition: opacity 0.8s ease;
     }
@@ -65,7 +62,6 @@
       min-height: 580px;
       opacity: 0;
       transition: opacity 1s ease;
-      filter: drop-shadow(0 0 25px rgba(255,255,255,0.15));
     }
   </style>
 </head>
@@ -76,27 +72,19 @@
   <div class="subtitle">رسالتك لليوم</div>
 
   <div class="wheel" id="wheel">
-    <span>SPIN</span>
+    <span>اضغط هنا</span>
   </div>
 
   <div class="message-title" id="messageTitle">
-    Your message for today
+    الروح تقول لك !! 
   </div>
 
   <div class="video-container" id="videoContainer"></div>
 
-  <!-- TikTok Embed Script (LOAD ONCE) -->
-  <script async src="https://www.tiktok.com/embed.js"></script>
-
   <script>
-    const originalVideoIds = [
-      "7592791446223211797",
-      "7592791446223211797",
+    const videoIds = [
       "7592791446223211797"
-      // add more IDs here
     ];
-
-    let remainingVideoIds = [...originalVideoIds];
 
     const wheel = document.getElementById("wheel");
     const videoContainer = document.getElementById("videoContainer");
@@ -105,39 +93,28 @@
     let rotation = 0;
     let spinning = false;
 
-    function getRandomVideoId() {
-      if (remainingVideoIds.length === 0) {
-        remainingVideoIds = [...originalVideoIds];
-      }
+    function loadTikTokEmbed(videoId) {
+      // امسح المحتوى
+      videoContainer.innerHTML = `
+        <blockquote
+          class="tiktok-embed"
+          cite="https://www.tiktok.com/video/${videoId}"
+          data-video-id="${videoId}"
+          style="max-width:325px;"
+        ></blockquote>
+      `;
 
-      const index = Math.floor(Math.random() * remainingVideoIds.length);
-      return remainingVideoIds.splice(index, 1)[0];
+      // احذف أي سكربت قديم
+      const oldScript = document.getElementById("tiktok-embed-script");
+      if (oldScript) oldScript.remove();
+
+      // أضف السكربت من جديد
+      const script = document.createElement("script");
+      script.id = "tiktok-embed-script";
+      script.src = "https://www.tiktok.com/embed.js";
+      script.async = true;
+      document.body.appendChild(script);
     }
-
-    function showVideo(videoId) {
-    videoContainer.innerHTML = `
-      <blockquote
-        class="tiktok-embed"
-        cite="https://www.tiktok.com/video/${videoId}"
-        data-video-id="${videoId}"
-        style="max-width:325px;"
-      ></blockquote>
-    `;
-
-    messageTitle.style.opacity = 1;
-    videoContainer.style.opacity = 1;
-
-    // انتظر سكربت تيك توك حتى يصبح جاهزًا
-    const tryLoad = () => {
-      if (window.tiktokEmbed && window.tiktokEmbed.load) {
-        window.tiktokEmbed.load();
-      } else {
-        setTimeout(tryLoad, 200);
-      }
-    };
-
-    tryLoad();
-  }
 
     wheel.addEventListener("click", () => {
       if (spinning) return;
@@ -150,10 +127,12 @@
       videoContainer.style.opacity = 0;
       videoContainer.innerHTML = "";
 
-      const videoId = getRandomVideoId();
+      const videoId = videoIds[Math.floor(Math.random() * videoIds.length)];
 
       setTimeout(() => {
-        showVideo(videoId);
+        loadTikTokEmbed(videoId);
+        messageTitle.style.opacity = 1;
+        videoContainer.style.opacity = 1;
         spinning = false;
       }, 1200);
     });
