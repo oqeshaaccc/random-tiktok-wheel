@@ -184,7 +184,7 @@ const videoLinks = [
 document.addEventListener("DOMContentLoaded", () => {
   const STORAGE_KEY = "remainingSpiritMessages";
 
-  // You will fill videoLinks in this array
+  // Fill this array with your videoLinks
   const videoLinks = []; 
 
   let remaining = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [...videoLinks];
@@ -213,6 +213,22 @@ document.addEventListener("DOMContentLoaded", () => {
     return chosen;
   }
 
+  function openVideo(link) {
+    const videoId = extractVideoId(link);
+    if (!videoId) return;
+
+    const appLink = `snssdk1233://aweme/detail/${videoId}`;
+    const webLink = link;
+
+    // Try opening TikTok app
+    window.location.href = appLink;
+
+    // Fallback to web after 1 second if app isn't installed
+    setTimeout(() => {
+      window.location.href = webLink;
+    }, 1000);
+  }
+
   wheel.addEventListener("click", () => {
     if (spinning) return;
     spinning = true;
@@ -235,19 +251,9 @@ document.addEventListener("DOMContentLoaded", () => {
   openBtn.addEventListener("click", () => {
     if (!selectedLink) return;
 
-    const videoId = extractVideoId(selectedLink);
-    if (!videoId) return;
+    openVideo(selectedLink);
 
-    const appLink = `snssdk1233://aweme/detail/${videoId}`;
-
-    // فتح تطبيق TikTok فقط
-    window.location.href = appLink;
-
-    // الرجوع تلقائيًا بدون تصفير الحالة
-    setTimeout(() => {
-      history.replaceState(null, "", location.pathname);
-    }, 2000);
-
+    // Optionally hide button/message
     message.style.opacity = 0;
     openBtn.style.opacity = 0;
     selectedLink = null;
