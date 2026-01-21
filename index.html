@@ -4,22 +4,31 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#000000">
-  
-  
-  <link rel="stylesheet" href="style.css" />
-
   <title>رَسَائِل الرُّوح</title>
+
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy"
+        content="
+          default-src 'self';
+          script-src 'self';
+          style-src 'self' 'unsafe-inline';
+          img-src 'self' data:;
+          connect-src 'none';
+          frame-src 'none';
+        ">
+
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+  <h2>عَجَلَة رَسائِل الرُّوح</h2>
 
-<h2>عَجَلَة رَسائِل الرُّوح</h2>
+  <div class="wheel" id="wheel">اضغط هنا</div>
 
-<div class="wheel" id="wheel">اضغط هنا</div>
+  <div class="message" id="message">رسالتك جاهزة ✨</div>
+  <button class="open-btn" id="openBtn">شاهدها من هنا</button>
 
-<div class="message" id="message">رسالتك جاهزة ✨</div>
-<button class="open-btn" id="openBtn">شاهدها من هنا</button>
-<script src="script.js" defer></script>
+  <!-- External JS -->
+  <script src="script.js" defer></script>
 </body>
 </html>
-
