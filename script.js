@@ -181,68 +181,75 @@ const videoLinks = [
   "https://www.tiktok.com/@the144.000/video/7594865849844976916"
 ];
 
-const STORAGE_KEY = "remainingSpiritMessages";
+document.addEventListener("DOMContentLoaded", () => {
+  const STORAGE_KEY = "remainingSpiritMessages";
 
-let remaining = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [...videoLinks];
-let selectedLink = null;
-let rotation = 0;
-let spinning = false;
+  // You will fill videoLinks in this array
+  const videoLinks = []; 
 
-const wheel = document.getElementById("wheel");
-const message = document.getElementById("message");
-const openBtn = document.getElementById("openBtn");
+  let remaining = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [...videoLinks];
+  let selectedLink = null;
+  let rotation = 0;
+  let spinning = false;
 
-function extractVideoId(url) {
-  const match = url.match(/video\/(\d+)/);
-  return match ? match[1] : null;
-}
+  const wheel = document.getElementById("wheel");
+  const message = document.getElementById("message");
+  const openBtn = document.getElementById("openBtn");
 
-function getRandomLink() {
-  if (remaining.length === 0) {
-    remaining = [...videoLinks];
+  function extractVideoId(url) {
+    const match = url.match(/video\/(\d+)/);
+    return match ? match[1] : null;
   }
 
-  const index = Math.floor(Math.random() * remaining.length);
-  const chosen = remaining.splice(index, 1)[0];
+  function getRandomLink() {
+    if (remaining.length === 0) {
+      remaining = [...videoLinks];
+    }
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(remaining));
-  return chosen;
-}
+    const index = Math.floor(Math.random() * remaining.length);
+    const chosen = remaining.splice(index, 1)[0];
 
-wheel.onclick = () => {
-  if (spinning) return;
-  spinning = true;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(remaining));
+    return chosen;
+  }
 
-  message.style.opacity = 0;
-  openBtn.style.opacity = 0;
+  wheel.addEventListener("click", () => {
+    if (spinning) return;
+    spinning = true;
 
-  rotation += 1080 + Math.random() * 360;
-  wheel.style.transform = `rotate(${rotation}deg)`;
+    message.style.opacity = 0;
+    openBtn.style.opacity = 0;
 
-  selectedLink = getRandomLink();
+    rotation += 1080 + Math.random() * 360;
+    wheel.style.transform = `rotate(${rotation}deg)`;
 
-  setTimeout(() => {
-    message.style.opacity = 1;
-    openBtn.style.opacity = 1;
-    spinning = false;
-  }, 1200);
-};
+    selectedLink = getRandomLink();
 
-openBtn.onclick = () => {
-  if (!selectedLink) return;
+    setTimeout(() => {
+      message.style.opacity = 1;
+      openBtn.style.opacity = 1;
+      spinning = false;
+    }, 1200);
+  });
 
-  const videoId = extractVideoId(selectedLink);
-  if (!videoId) return;
+  openBtn.addEventListener("click", () => {
+    if (!selectedLink) return;
 
-  const appLink = `snssdk1233://aweme/detail/${videoId}`;
+    const videoId = extractVideoId(selectedLink);
+    if (!videoId) return;
 
-  window.location.href = appLink;
+    const appLink = `snssdk1233://aweme/detail/${videoId}`;
 
-  setTimeout(() => {
-    history.replaceState(null, "", location.pathname);
-  }, 2000);
+    // فتح تطبيق TikTok فقط
+    window.location.href = appLink;
 
-  message.style.opacity = 0;
-  openBtn.style.opacity = 0;
-  selectedLink = null;
-};
+    // الرجوع تلقائيًا بدون تصفير الحالة
+    setTimeout(() => {
+      history.replaceState(null, "", location.pathname);
+    }, 2000);
+
+    message.style.opacity = 0;
+    openBtn.style.opacity = 0;
+    selectedLink = null;
+  });
+});
