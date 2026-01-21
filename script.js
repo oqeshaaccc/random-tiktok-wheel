@@ -184,7 +184,7 @@ const videoLinks = [
 document.addEventListener("DOMContentLoaded", () => {
   const STORAGE_KEY = "remainingSpiritMessages";
 
-  // Fill your videoLinks array here
+  // You will fill videoLinks in this array
   const videoLinks = []; 
 
   let remaining = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [...videoLinks];
@@ -202,9 +202,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function getRandomLink() {
-    if (remaining.length === 0) remaining = [...videoLinks];
+    if (remaining.length === 0) {
+      remaining = [...videoLinks];
+    }
+
     const index = Math.floor(Math.random() * remaining.length);
     const chosen = remaining.splice(index, 1)[0];
+
     localStorage.setItem(STORAGE_KEY, JSON.stringify(remaining));
     return chosen;
   }
@@ -235,28 +239,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!videoId) return;
 
     const appLink = `snssdk1233://aweme/detail/${videoId}`;
-    const webLink = selectedLink;
 
-    let pageHidden = false;
-
-    function handleVisibility() {
-      pageHidden = true;
-    }
-
-    document.addEventListener("visibilitychange", handleVisibility);
-
-    // Try opening the TikTok app
+    // فتح تطبيق TikTok فقط
     window.location.href = appLink;
 
-    // Fallback to web after 1.2s if page is still visible
+    // الرجوع تلقائيًا بدون تصفير الحالة
     setTimeout(() => {
-      document.removeEventListener("visibilitychange", handleVisibility);
-      if (!pageHidden) {
-        window.location.href = webLink;
-      }
-    }, 1200);
+      history.replaceState(null, "", location.pathname);
+    }, 2000);
 
-    // Reset UI
     message.style.opacity = 0;
     openBtn.style.opacity = 0;
     selectedLink = null;
