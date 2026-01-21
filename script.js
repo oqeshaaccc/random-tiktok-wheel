@@ -202,9 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function getRandomLink() {
-    if (remaining.length === 0) {
-      remaining = [...videoLinks];
-    }
+    if (remaining.length === 0) remaining = [...videoLinks];
     const index = Math.floor(Math.random() * remaining.length);
     const chosen = remaining.splice(index, 1)[0];
     localStorage.setItem(STORAGE_KEY, JSON.stringify(remaining));
@@ -239,20 +237,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const appLink = `snssdk1233://aweme/detail/${videoId}`;
     const webLink = selectedLink;
 
-    const start = Date.now();
+    let pageHidden = false;
 
-    // Try opening TikTok app
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    iframe.src = appLink;
-    document.body.appendChild(iframe);
+    function handleVisibility() {
+      pageHidden = true;
+    }
 
-    // Fallback to web if app not installed
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    // Try opening the TikTok app
+    window.location.href = appLink;
+
+    // Fallback to web after 1.2s if page is still visible
     setTimeout(() => {
-      if (Date.now() - start < 1500) {
+      document.removeEventListener("visibilitychange", handleVisibility);
+      if (!pageHidden) {
         window.location.href = webLink;
       }
-      document.body.removeChild(iframe);
     }, 1200);
 
     // Reset UI
