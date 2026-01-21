@@ -184,7 +184,7 @@ const videoLinks = [
 document.addEventListener("DOMContentLoaded", () => {
   const STORAGE_KEY = "remainingSpiritMessages";
 
-  // Fill this array with your videoLinks
+  // Fill your videoLinks array here
   const videoLinks = []; 
 
   let remaining = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [...videoLinks];
@@ -205,28 +205,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (remaining.length === 0) {
       remaining = [...videoLinks];
     }
-
     const index = Math.floor(Math.random() * remaining.length);
     const chosen = remaining.splice(index, 1)[0];
-
     localStorage.setItem(STORAGE_KEY, JSON.stringify(remaining));
     return chosen;
-  }
-
-  function openVideo(link) {
-    const videoId = extractVideoId(link);
-    if (!videoId) return;
-
-    const appLink = `snssdk1233://aweme/detail/${videoId}`;
-    const webLink = link;
-
-    // Try opening TikTok app
-    window.location.href = appLink;
-
-    // Fallback to web after 1 second if app isn't installed
-    setTimeout(() => {
-      window.location.href = webLink;
-    }, 1000);
   }
 
   wheel.addEventListener("click", () => {
@@ -251,9 +233,29 @@ document.addEventListener("DOMContentLoaded", () => {
   openBtn.addEventListener("click", () => {
     if (!selectedLink) return;
 
-    openVideo(selectedLink);
+    const videoId = extractVideoId(selectedLink);
+    if (!videoId) return;
 
-    // Optionally hide button/message
+    const appLink = `snssdk1233://aweme/detail/${videoId}`;
+    const webLink = selectedLink;
+
+    const start = Date.now();
+
+    // Try opening TikTok app
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = appLink;
+    document.body.appendChild(iframe);
+
+    // Fallback to web if app not installed
+    setTimeout(() => {
+      if (Date.now() - start < 1500) {
+        window.location.href = webLink;
+      }
+      document.body.removeChild(iframe);
+    }, 1200);
+
+    // Reset UI
     message.style.opacity = 0;
     openBtn.style.opacity = 0;
     selectedLink = null;
