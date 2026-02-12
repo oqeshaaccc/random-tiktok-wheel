@@ -195,6 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const wheel = document.getElementById("wheel");
   const message = document.getElementById("message");
   const openBtn = document.getElementById("openBtn");
+  const loading = document.getElementById("loading");
 
   function extractVideoId(url) {
     const match = url.match(/video\/(\d+)/);
