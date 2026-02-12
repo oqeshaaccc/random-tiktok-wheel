@@ -182,12 +182,12 @@ const videoLinks = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
+
   const STORAGE_KEY = "remainingSpiritMessages";
 
-  // You will fill videoLinks in this array
-  const videoLinks = []; 
+  let remaining =
+    JSON.parse(localStorage.getItem(STORAGE_KEY)) || [...videoLinks];
 
-  let remaining = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [...videoLinks];
   let selectedLink = null;
   let rotation = 0;
   let spinning = false;
@@ -236,20 +236,26 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!selectedLink) return;
 
     const videoId = extractVideoId(selectedLink);
-    if (!videoId) return;
 
-    const appLink = `snssdk1233://aweme/detail/${videoId}`;
+    // إذا كان فيديو نحاول فتح التطبيق
+    if (videoId) {
 
-    // فتح تطبيق TikTok فقط
-    window.location.href = appLink;
+      const appLink = `snssdk1233://aweme/detail/${videoId}`;
 
-    // الرجوع تلقائيًا بدون تصفير الحالة
-    setTimeout(() => {
-      history.replaceState(null, "", location.pathname);
-    }, 2000);
+      // محاولة فتح التطبيق
+      window.location.href = appLink;
 
-    message.style.opacity = 0;
-    openBtn.style.opacity = 0;
+      // fallback للويب بعد 1.5 ثانية
+      setTimeout(() => {
+        window.location.href = selectedLink;
+      }, 1500);
+
+    } else {
+      // الصور أو أي رابط آخر يفتح مباشرة بالمتصفح
+      window.location.href = selectedLink;
+    }
+
     selectedLink = null;
   });
+
 });
