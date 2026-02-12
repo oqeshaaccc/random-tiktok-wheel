@@ -228,12 +228,21 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       message.style.opacity = 1;
       openBtn.style.opacity = 1;
+      openBtn.style.pointerEvents = "auto";
+      loading.style.opacity = 0;
       spinning = false;
     }, 1200);
   });
 
   openBtn.addEventListener("click", () => {
     if (!selectedLink) return;
+
+    //اخفاء الزر فورا ومنع الضغط المتكرر
+    openBtn.style.opacity = 0;
+    openBtn.style.pointerEvents = "none";const
+
+    // اظهار اللودنج
+    loading.style.opacity = 1;
 
     const videoId = extractVideoId(selectedLink);
 
