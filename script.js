@@ -267,7 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
       window.open(selectedLink, "_blank", "noopener,noreferrer");
     }
 
-    selectedLink = null;
+    
   });
-
+selectedLink = null;
 });
