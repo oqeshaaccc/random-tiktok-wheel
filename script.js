@@ -220,6 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     message.style.opacity = 0;
     openBtn.style.opacity = 0;
+    loading.style.opacity = 0;
 
     rotation += 1080 + Math.random() * 360;
     wheel.style.transform = `rotate(${rotation}deg)`;
@@ -240,7 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //اخفاء الزر فورا ومنع الضغط المتكرر
     openBtn.style.opacity = 0;
-    openBtn.style.pointerEvents = "none";const
+    openBtn.style.pointerEvents = "none";
 
     // اظهار اللودنج
     loading.style.opacity = 1;
