@@ -41,3 +41,12 @@ body {
       opacity: 0;
       transition: opacity 0.6s ease;
     }
+
+.loading{
+  margin-top:15px;
+  opacity:0;
+  transition:opacity .3s ease;
+  font-size:14px;
+  color:#00f2ea;
+}
+
