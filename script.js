@@ -258,7 +258,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // fallback للويب بعد 1.5 ثانية
       setTimeout(() => {
-        window.location.href = selectedLink;
+       // window.location.href = selectedLink;
+        window.open(selectedLink, "_blank", "noopener,noreferrer");
       }, 500);
 
     } else {
