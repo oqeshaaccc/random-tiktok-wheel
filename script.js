@@ -248,11 +248,11 @@ document.addEventListener("DOMContentLoaded", () => {
       // fallback للويب بعد 1.5 ثانية
       setTimeout(() => {
         window.location.href = selectedLink;
-      }, 1500);
+      }, 500);
 
     } else {
       // الصور أو أي رابط آخر يفتح مباشرة بالمتصفح
-      window.location.href = selectedLink;
+      window.open(selectedLink, "_blank", "noopener,noreferrer");
     }
 
     selectedLink = null;
